@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  mongodb-new:
+    image: mongo:latest
+    container_name: mongodb-new
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-new-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    networks:
+      - mongodb-new-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    networks:
+      - mongodb-new-network
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb-new
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=password
+    depends_on:
+      - mongodb-new
+
+networks:
+  mongodb-new-network:
+    driver: bridge
+
+volumes:
+  mongodb-new-data:
